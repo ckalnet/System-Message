@@ -1,0 +1,59 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+    <title>System Message</title>
+    <link href="css/jquery.gritter.css" rel="stylesheet" type="text/css" />
+    <script src="Scripts/jquery-1.6.2.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.signalR.js" type="text/javascript"></script>
+    <script src="/signalr/hubs" type="text/javascript"></script>
+    <script src="Scripts/jquery.gritter.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            // Proxy created on the fly
+            var notification = $.connection.notification;
+
+            notification.addMessage = function (message) {
+                $.gritter.add({
+                    title: 'Message',
+                    text: message,
+                    sticky: false
+                }); 
+            };
+
+            notification.alertApplicationMaintenance = function() {
+                $.gritter.add({
+                    title: 'Application Maintenance!',
+                    text: 'This system will be going offline in 5 minutes for maintenance.  Please finish up your work.',
+                    sticky: true,
+                    class_name: 'my-sticky-class'
+                });
+            };
+
+            $("#broadcast").click(function () {
+                notification.send($('#msg').val());
+            });
+
+            $("#maintenance").click(function () {
+                notification.applicationMaintenance();
+            });
+
+            // Start the connection
+            $.connection.hub.start();
+        });
+    </script>
+</head>
+<body>
+    
+    <h1>System Message</h1>
+
+    <ul id="messages"></ul>
+
+    <input type="text" id="msg" />
+    <input type="button" id="broadcast" value="Broadcast"/>
+
+    <p>
+        <input type="button" id="maintenance" value="Send Application Maintenance Message"/>
+    </p>
+
+</body>
+</html>
